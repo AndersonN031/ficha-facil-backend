@@ -1,5 +1,7 @@
 {
   "compilerOptions": {
+    "strict": true,
+    "skipLibCheck": true,
     "module": "nodenext",
     "moduleResolution": "nodenext",
     "resolvePackageJsonExports": true,
@@ -20,7 +22,6 @@
       "@infra/*": ["src/infra/*"]
     },
     "incremental": true,
-    "skipLibCheck": true,
     "strictNullChecks": true,
     "forceConsistentCasingInFileNames": true,
     "noImplicitAny": false,
