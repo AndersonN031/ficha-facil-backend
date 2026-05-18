@@ -88,3 +88,5 @@ Cada operação de negócio é um usecase independente — `RegisterUseCase`, `L
 ## Autores
 
 Projeto desenvolvido como portfólio pessoal com foco em boas práticas de desenvolvimento back-end e front-end.
+
+OBS: Atualmente estou utilizando a branch dev para mergear códigos ao inves da master
