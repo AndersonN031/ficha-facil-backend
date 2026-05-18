@@ -1,10 +1,17 @@
 import { Injectable, ConflictException } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
+import { JwtService, JwtSignOptions } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
 import { AuthRepository } from '../repositories/auth.repository';
 import { RegisterDto } from '../dto/register.dto';
 import { UserEntity } from '../entities/user.entity';
+import { randomUUID } from 'crypto';
+
+interface JwtPayload {
+  sub: string;
+  email: string;
+  role: string;
+}
 
 @Injectable()
 export class RegisterUseCase {
@@ -34,16 +41,26 @@ export class RegisterUseCase {
   }
 
   private async generateTokens(userId: string, email: string, role: string) {
-    const payload = { sub: userId, email, role };
+    const payload: JwtPayload = { sub: userId, email, role };
+
+    const accessExpiresIn = this.configService.getOrThrow(
+      'JWT_EXPIRES_IN',
+    ) as JwtSignOptions['expiresIn'];
+
+    const refreshExpiresIn = this.configService.getOrThrow(
+      'JWT_REFRESH_EXPIRES_IN',
+    ) as JwtSignOptions['expiresIn'];
 
     const accessToken = this.jwtService.sign(payload, {
       secret: this.configService.get('JWT_SECRET'),
-      expiresIn: this.configService.get('JWT_EXPIRES_IN'),
+      expiresIn: accessExpiresIn,
+      jwtid: randomUUID(),
     });
 
     const refreshToken = this.jwtService.sign(payload, {
       secret: this.configService.get('JWT_REFRESH_SECRET'),
-      expiresIn: this.configService.get('JWT_REFRESH_EXPIRES_IN'),
+      expiresIn: refreshExpiresIn,
+      jwtid: randomUUID(),
     });
 
     const expiresAt = new Date();
