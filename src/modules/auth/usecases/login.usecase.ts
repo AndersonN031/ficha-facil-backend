@@ -1,10 +1,17 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
+import { JwtService, JwtSignOptions } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
 import { AuthRepository } from '../repositories/auth.repository';
 import { LoginDto } from '../dto/login.dto';
 import { UserEntity } from '../entities/user.entity';
+import { randomUUID } from 'crypto';
+
+interface JwtPayload {
+  sub: string;
+  email: string;
+  role: string;
+}
 
 @Injectable()
 export class LoginUseCase {
@@ -30,16 +37,26 @@ export class LoginUseCase {
   }
 
   private async generateTokens(userId: string, email: string, role: string) {
-    const payload = { sub: userId, email, role };
+    const payload: JwtPayload = { sub: userId, email, role };
+
+    const accessExpiresIn = this.configService.getOrThrow(
+      'JWT_EXPIRES_IN',
+    ) as JwtSignOptions['expiresIn'];
+
+    const refreshExpiresIn = this.configService.getOrThrow(
+      'JWT_REFRESH_EXPIRES_IN',
+    ) as JwtSignOptions['expiresIn'];
 
     const accessToken = this.jwtService.sign(payload, {
-      secret: this.configService.get('JWT_SECRET'),
-      expiresIn: this.configService.get('JWT_EXPIRES_IN'),
+      secret: this.configService.getOrThrow<string>('JWT_SECRET'),
+      expiresIn: accessExpiresIn,
+      jwtid: randomUUID(),
     });
 
     const refreshToken = this.jwtService.sign(payload, {
-      secret: this.configService.get('JWT_REFRESH_SECRET'),
-      expiresIn: this.configService.get('JWT_REFRESH_EXPIRES_IN'),
+      secret: this.configService.getOrThrow<string>('JWT_REFRESH_SECRET'),
+      expiresIn: refreshExpiresIn,
+      jwtid: randomUUID(),
     });
 
     const expiresAt = new Date();
