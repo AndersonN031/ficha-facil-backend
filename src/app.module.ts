@@ -9,7 +9,6 @@ import { JwtGuard } from '@shared/guards/jwt.guard';
 import { JwtModule } from '@nestjs/jwt';
 import { RolesGuard } from '@shared/guards/roles.guard';
 import { UsersModule } from './modules/users/users.module';
-import { HealthUnitsController } from './modules/health-units/controllers/health-units.controller';
 import { HealthUnitsModule } from './modules/health-units/health-units.module';
 
 @Module({
@@ -23,7 +22,7 @@ import { HealthUnitsModule } from './modules/health-units/health-units.module';
     UsersModule,
     HealthUnitsModule,
   ],
-  controllers: [AppController, HealthUnitsController],
+  controllers: [AppController],
   providers: [
     AppService,
     { provide: APP_GUARD, useClass: JwtGuard },
