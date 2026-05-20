@@ -14,6 +14,20 @@ enum Role {
   ADMIN
 }
 
+enum QueueStatus {
+  OPEN      
+  CLOSED   
+  FULL      
+}
+
+enum QueueEntryStatus {
+  WAITING   
+  CALLED     
+  DONE       
+  CANCELLED  
+}
+
+
 model User {
   id        String   @id @default(uuid())
   name      String
@@ -27,6 +41,7 @@ model User {
   updatedAt DateTime @updatedAt
 
   refreshTokens RefreshToken[]
+  queueEntries QueueEntry[]
 
   @@map("users")
 }
@@ -42,4 +57,58 @@ model RefreshToken {
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("refresh_tokens")
+}
+
+model HealthUnit {
+  id             String   @id @default(uuid())
+  name           String
+  address        String
+  city           String
+  state          String   @db.Char(2)
+  cnes           String?  @unique
+  maxTicketsDay  Int      @default(20)
+  openTime       String   @default("07:00")
+  closeTime      String   @default("11:00")
+  active         Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  queues Queue[]
+
+  @@map("health_units")
+}
+
+model Queue {
+  id           String      @id @default(uuid())
+  date         DateTime    @db.Date
+  status       QueueStatus @default(OPEN)
+  ticketCount  Int         @default(0)
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  healthUnitId String
+  healthUnit   HealthUnit @relation(fields: [healthUnitId], references: [id])
+
+  entries QueueEntry[]
+
+  @@unique([healthUnitId, date])
+  @@map("queues")
+}
+
+model QueueEntry {
+  id        String           @id @default(uuid())
+  position  Int
+  status    QueueEntryStatus @default(WAITING)
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+
+  queueId String
+  queue   Queue  @relation(fields: [queueId], references: [id])
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  @@unique([queueId, userId])  
+  @@unique([queueId, position]) 
+  @@map("queue_entries")
 }
