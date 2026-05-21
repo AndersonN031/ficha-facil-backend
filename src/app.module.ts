@@ -9,6 +9,7 @@ import { JwtGuard } from '@shared/guards/jwt.guard';
 import { JwtModule } from '@nestjs/jwt';
 import { RolesGuard } from '@shared/guards/roles.guard';
 import { UsersModule } from './modules/users/users.module';
+import { HealthUnitsModule } from './modules/health-units/health-units.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { UsersModule } from './modules/users/users.module';
     PrismaModule,
     AuthModule,
     UsersModule,
+    HealthUnitsModule,
   ],
   controllers: [AppController],
   providers: [
