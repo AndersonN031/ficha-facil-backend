@@ -10,6 +10,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { RolesGuard } from '@shared/guards/roles.guard';
 import { UsersModule } from './modules/users/users.module';
 import { HealthUnitsModule } from './modules/health-units/health-units.module';
+import { QueueModule } from '@modules/queue/queue.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { HealthUnitsModule } from './modules/health-units/health-units.module';
     AuthModule,
     UsersModule,
     HealthUnitsModule,
+    QueueModule,
   ],
   controllers: [AppController],
   providers: [
