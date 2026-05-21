@@ -73,6 +73,7 @@ class EnterQueueUseCase {
       }
     }
 
+    // 7. define a próxima posição e cria a entry
     const position = queue.ticketCount + 1;
     const entry = await this.queueRepository.createEntry({
       queueId: queue.id,
