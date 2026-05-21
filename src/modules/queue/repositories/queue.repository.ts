@@ -98,6 +98,10 @@ class QueueRepository {
       },
     });
   }
+
+  async deleteEntry(entryId: string): Promise<void> {
+    await this.prisma.queueEntry.delete({ where: { id: entryId } });
+  }
 }
 
 export { QueueRepository };

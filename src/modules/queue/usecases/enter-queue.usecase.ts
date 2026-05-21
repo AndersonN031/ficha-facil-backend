@@ -22,36 +22,55 @@ class EnterQueueUseCase {
     position: number;
     message: string;
   }> {
+    // 1. verifica se o posto existe e está ativo
     const healthUnit = await this.healthUnitsRepository.findById(healthUnitId);
     if (!healthUnit || !healthUnit.active) {
       throw new BadRequestException('Posto de saúde não encontrado ou inativo');
     }
 
+    // 2. verifica se está no horário de funcionamento
     this.validateOpeningHours(healthUnit.openTime, healthUnit.closeTime);
 
+    // 3. busca ou cria a fila de hoje
     let queue = await this.queueRepository.findTodayQueue(healthUnitId);
     if (!queue) {
       queue = await this.queueRepository.createTodayQueue(healthUnitId);
     }
 
+    // 4. verifica se a fila está aberta
     if (queue.status !== 'OPEN') {
       throw new BadRequestException('A fila está encerrada para hoje');
     }
 
+    // 5. verifica se ainda tem vagas
     if (queue.ticketCount >= healthUnit.maxTicketsDay) {
       throw new BadRequestException(
         `Todas as ${healthUnit.maxTicketsDay} fichas já foram distribuídas`,
       );
     }
 
-    const alreadyInQueue = await this.queueRepository.findEntry(
+    // 6. verifica se o paciente já tem uma entrada nessa fila
+    const existingEntry = await this.queueRepository.findEntry(
       queue.id,
       userId,
     );
-    if (alreadyInQueue && alreadyInQueue.status === 'WAITING') {
-      throw new ConflictException(
-        `Você já está na fila na posição ${alreadyInQueue.position}`,
-      );
+
+    if (existingEntry) {
+      switch (existingEntry.status) {
+        case 'WAITING':
+          throw new ConflictException(
+            `Você já está na fila na posição ${existingEntry.position}`,
+          );
+        case 'CALLED':
+          throw new ConflictException('Você já foi chamado para atendimento');
+        case 'DONE':
+          throw new BadRequestException(
+            'Você já foi atendido hoje neste posto',
+          );
+        case 'CANCELLED':
+          await this.queueRepository.deleteEntry(existingEntry.id);
+          break;
+      }
     }
 
     const position = queue.ticketCount + 1;
