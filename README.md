@@ -77,8 +77,8 @@ Cada operação de negócio é um usecase independente — `RegisterUseCase`, `L
 |--------|--------|-----------|
 | **Auth** | ✅ Concluído | Register, login, refresh token, logout, JWT + RBAC |
 | **Users** | ✅ Concluído | CRUD de perfil, gerenciamento de papéis |
-| **Health Units** | 🚧 Em andamento | Cadastro e configuração de postos |
-| **Queue** | ⏳ Pendente | Fila virtual, posição em tempo real |
+| **Health Units** | ✅ Concluído| Cadastro e configuração de postos |
+| **Queue** | 🚧 Em andamento | Fila virtual, posição em tempo real |
 | **Tickets** | ⏳ Pendente | Emissão e controle de fichas |
 | **Notifications** | ⏳ Pendente | Socket.io + BullMQ workers |
 | **Reports** | ⏳ Pendente | Métricas e dashboard admin |
