@@ -10,6 +10,8 @@ import { JwtModule } from '@nestjs/jwt';
 import { RolesGuard } from '@shared/guards/roles.guard';
 import { UsersModule } from './modules/users/users.module';
 import { HealthUnitsModule } from './modules/health-units/health-units.module';
+import { QueueController } from './queue/queue.controller';
+import { QueueModule } from './modules/queue/queue.module';
 
 @Module({
   imports: [
@@ -21,8 +23,9 @@ import { HealthUnitsModule } from './modules/health-units/health-units.module';
     AuthModule,
     UsersModule,
     HealthUnitsModule,
+    QueueModule,
   ],
-  controllers: [AppController],
+  controllers: [AppController, QueueController],
   providers: [
     AppService,
     { provide: APP_GUARD, useClass: JwtGuard },
