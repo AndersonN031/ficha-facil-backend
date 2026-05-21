@@ -6,10 +6,14 @@ import {
 } from '@nestjs/common';
 import { QueueRepository } from '../repositories/queue.repository';
 import { QueueEntry } from '@prisma/client';
+import { RedisService } from 'src/config/redis.config';
 
 @Injectable()
 class LeaveQueueUseCase {
-  constructor(private readonly queueRepository: QueueRepository) {}
+  constructor(
+    private readonly queueRepository: QueueRepository,
+    private readonly redisService: RedisService,
+  ) {}
 
   async execute(entryId: string, userId: string): Promise<QueueEntry> {
     const entry = await this.queueRepository.findEntryById(entryId);
@@ -27,7 +31,14 @@ class LeaveQueueUseCase {
       );
     }
 
-    return this.queueRepository.cancelEntry(entryId);
+    const cancelled = await this.queueRepository.cancelEntry(entryId);
+
+    // remove a chave de idempotência para permitir entrar de novo
+    const todayKey = new Date().toISOString().split('T')[0];
+    const idempotencyKey = `queue:enter:${userId}:${entry.queue.healthUnitId}:${todayKey}`;
+    await this.redisService.delete(idempotencyKey);
+
+    return cancelled;
   }
 }
 export { LeaveQueueUseCase };

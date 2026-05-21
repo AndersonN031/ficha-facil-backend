@@ -28,6 +28,9 @@ export async function createTestApp(): Promise<{
 }
 
 export async function cleanDatabase(prisma: PrismaService): Promise<void> {
+  await prisma.queueEntry.deleteMany();
+  await prisma.queue.deleteMany();
+  await prisma.healthUnit.deleteMany();
   await prisma.refreshToken.deleteMany();
   await prisma.user.deleteMany();
 }

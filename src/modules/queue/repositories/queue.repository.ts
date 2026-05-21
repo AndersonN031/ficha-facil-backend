@@ -1,11 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import {
+  Prisma,
   Queue,
   QueueEntry,
   QueueEntryStatus,
   QueueStatus,
 } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
+
+type QueueEntryWithQueue = Prisma.QueueEntryGetPayload<{
+  include: { queue: true };
+}>;
 
 @Injectable()
 class QueueRepository {
@@ -50,9 +55,10 @@ class QueueRepository {
     });
   }
 
-  async findEntryById(entryId: string): Promise<QueueEntry | null> {
+  async findEntryById(entryId: string): Promise<QueueEntryWithQueue | null> {
     return this.prisma.queueEntry.findUnique({
       where: { id: entryId },
+      include: { queue: true },
     });
   }
 
