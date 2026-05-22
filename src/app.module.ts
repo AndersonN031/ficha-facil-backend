@@ -11,6 +11,7 @@ import { RolesGuard } from '@shared/guards/roles.guard';
 import { UsersModule } from './modules/users/users.module';
 import { HealthUnitsModule } from './modules/health-units/health-units.module';
 import { QueueModule } from '@modules/queue/queue.module';
+import { RedisModule } from './config/redis.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { QueueModule } from '@modules/queue/queue.module';
     UsersModule,
     HealthUnitsModule,
     QueueModule,
+    RedisModule,
   ],
   controllers: [AppController],
   providers: [
