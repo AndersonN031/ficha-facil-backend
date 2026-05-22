@@ -4,12 +4,18 @@ import { QueueController } from './controllers/queue.controller';
 import { QueueRepository } from './repositories/queue.repository';
 import { EnterQueueUseCase } from './usecases/enter-queue.usecase';
 import { LeaveQueueUseCase } from './usecases/leave-queue.usecase';
+import { QueueGateway } from './gateway/queue.gateway';
 
 @Module({
   imports: [HealthUnitsModule],
   controllers: [QueueController],
-  providers: [QueueRepository, EnterQueueUseCase, LeaveQueueUseCase],
-  exports: [QueueRepository],
+  providers: [
+    QueueRepository,
+    QueueGateway,
+    EnterQueueUseCase,
+    LeaveQueueUseCase,
+  ],
+  exports: [QueueRepository, QueueGateway],
 })
 class QueueModule {}
 

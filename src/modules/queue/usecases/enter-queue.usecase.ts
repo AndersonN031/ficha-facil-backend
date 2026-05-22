@@ -7,6 +7,7 @@ import { QueueEntry } from '@prisma/client';
 import { QueueRepository } from '../repositories/queue.repository';
 import { HealthUnitsRepository } from '@modules/health-units/repositories/health-units.repository';
 import { RedisService } from 'src/config/redis.config';
+import { QueueGateway } from '../gateway/queue.gateway';
 
 @Injectable()
 class EnterQueueUseCase {
@@ -14,6 +15,7 @@ class EnterQueueUseCase {
     private readonly queueRepository: QueueRepository,
     private readonly healthUnitsRepository: HealthUnitsRepository,
     private readonly redisService: RedisService,
+    private readonly queueGateway: QueueGateway,
   ) {}
 
   async execute(
@@ -99,6 +101,22 @@ class EnterQueueUseCase {
         userId,
         position,
       });
+
+      // 8. emite atualização para todos conectados no posto
+      const updatedQueue = await this.queueRepository.findQueueWithEntries(
+        queue.id,
+      );
+      if (updatedQueue) {
+        this.queueGateway.emitQueueUpdate(healthUnitId, {
+          healthUnitId,
+          ticketCount: updatedQueue.ticketCount,
+          entries: updatedQueue.entries.map((e) => ({
+            userId: e.userId,
+            position: e.position,
+            status: e.status,
+          })),
+        });
+      }
 
       return {
         entry,
