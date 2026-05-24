@@ -8,7 +8,7 @@ Sistema de fila virtual para postos de saúde públicos. O projeto nasceu de um 
 
 ## O problema
 
-Postos de saúde públicos distribuem fichas de atendimento por ordem de chegada presencial. Isso obriga pacientes a madrugar na fila, muitas vezes sem garantia de atendimento. O FilaSaúde digitaliza esse processo com uma fila virtual onde o posto controla a abertura e o limite de fichas do dia, e os pacientes entram e acompanham tudo pelo aplicativo.
+Postos de saúde públicos distribuem fichas de atendimento por ordem de chegada presencial. Isso obriga pacientes a madrugar na fila, muitas vezes sem garantia de atendimento. O Ficha Fácil digitaliza esse processo com uma fila virtual onde o posto controla a abertura e o limite de fichas do dia, e os pacientes entram e acompanham tudo pelo aplicativo.
 
 ---
 
