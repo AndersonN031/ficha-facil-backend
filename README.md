@@ -1,4 +1,4 @@
-# FilaSaúde
+# Ficha Fácil
 
 Sistema de fila virtual para postos de saúde públicos. O projeto nasceu de um problema real: pessoas precisam sair de madrugada para garantir uma ficha no posto de saúde do bairro. O FilaSaúde resolve isso permitindo que o paciente entre na fila pelo celular e acompanhe sua posição em tempo real, sem precisar estar presencialmente no local.
 
