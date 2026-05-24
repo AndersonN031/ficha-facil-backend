@@ -8,7 +8,7 @@ Sistema de fila virtual para postos de saúde públicos. O projeto nasceu de um 
 
 ## O problema
 
-Postos de saúde públicos distribuem fichas de atendimento por ordem de chegada presencial. Isso obriga pacientes a madrugar na fila, muitas vezes sem garantia de atendimento. O FilaSaúde digitaliza esse processo com uma fila virtual onde o posto controla a abertura e o limite de fichas do dia, e os pacientes entram e acompanham tudo pelo aplicativo.
+Postos de saúde públicos distribuem fichas de atendimento por ordem de chegada presencial. Isso obriga pacientes a madrugar na fila, muitas vezes sem garantia de atendimento. O Ficha Fácil digitaliza esse processo com uma fila virtual onde o posto controla a abertura e o limite de fichas do dia, e os pacientes entram e acompanham tudo pelo aplicativo.
 
 ---
 
@@ -76,9 +76,9 @@ Cada operação de negócio é um usecase independente — `RegisterUseCase`, `L
 | Módulo | Status | Descrição |
 |--------|--------|-----------|
 | **Auth** | ✅ Concluído | Register, login, refresh token, logout, JWT + RBAC |
-| **Users** | 🚧 Em andamento | CRUD de perfil, gerenciamento de papéis |
-| **Health Units** | ⏳ Pendente | Cadastro e configuração de postos |
-| **Queue** | ⏳ Pendente | Fila virtual, posição em tempo real |
+| **Users** | ✅ Concluído | CRUD de perfil, gerenciamento de papéis |
+| **Health Units** | ✅ Concluído| Cadastro e configuração de postos |
+| **Queue** | 🚧 Em andamento | Fila virtual, posição em tempo real |
 | **Tickets** | ⏳ Pendente | Emissão e controle de fichas |
 | **Notifications** | ⏳ Pendente | Socket.io + BullMQ workers |
 | **Reports** | ⏳ Pendente | Métricas e dashboard admin |
