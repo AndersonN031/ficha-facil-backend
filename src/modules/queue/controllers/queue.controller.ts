@@ -1,6 +1,7 @@
 import {
   Controller,
   Delete,
+  Get,
   HttpCode,
   HttpStatus,
   Param,
@@ -10,13 +11,22 @@ import { EnterQueueUseCase } from '../usecases/enter-queue.usecase';
 import { LeaveQueueUseCase } from '../usecases/leave-queue.usecase';
 import { CurrentUser } from '@shared/decorators/current-user.decorator';
 import type { CurrentUserPayload } from '@shared/decorators/current-user.decorator';
+import { GetCachedQueueUseCase } from '../usecases/get-cached-queue.usecase';
+import { Public } from '@shared/decorators/public.decorator';
 
 @Controller('queue')
 class QueueController {
   constructor(
     private readonly enterQueueUseCase: EnterQueueUseCase,
     private readonly leaveQueueUseCase: LeaveQueueUseCase,
+    private readonly getCachedQueueUseCase: GetCachedQueueUseCase,
   ) {}
+
+  @Public()
+  @Get(':unitId')
+  async getQueue(@Param('unitId') unitId: string) {
+    return this.getCachedQueueUseCase.execute(unitId);
+  }
 
   @Post(':unitId/enter')
   async enter(
