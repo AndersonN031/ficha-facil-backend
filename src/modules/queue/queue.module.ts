@@ -5,6 +5,7 @@ import { QueueRepository } from './repositories/queue.repository';
 import { EnterQueueUseCase } from './usecases/enter-queue.usecase';
 import { LeaveQueueUseCase } from './usecases/leave-queue.usecase';
 import { QueueGateway } from './gateway/queue.gateway';
+import { GetCachedQueueUseCase } from './usecases/get-cached-queue.usecase';
 
 @Module({
   imports: [HealthUnitsModule],
@@ -14,6 +15,7 @@ import { QueueGateway } from './gateway/queue.gateway';
     QueueGateway,
     EnterQueueUseCase,
     LeaveQueueUseCase,
+    GetCachedQueueUseCase,
   ],
   exports: [QueueRepository, QueueGateway],
 })

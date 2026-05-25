@@ -13,6 +13,13 @@ export class RedisService {
       password: this.configService.get<string>('REDIS_PASSWORD'),
     });
   }
+  async get(key: string): Promise<string | null> {
+    return await this.client.get(key);
+  }
+
+  async set(key: string, value: string, ttlSeconds: number): Promise<void> {
+    await this.client.set(key, value, 'EX', ttlSeconds);
+  }
 
   // tenta gravar a chave apenas se não existir (atômico)
   // retorna true se conseguiu gravar (primeira vez)

@@ -6,6 +6,7 @@ import {
   QueueEntryStatus,
   QueueStatus,
 } from '@prisma/client';
+import { RedisService } from 'src/config/redis.config';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 type QueueEntryWithQueue = Prisma.QueueEntryGetPayload<{
@@ -14,7 +15,37 @@ type QueueEntryWithQueue = Prisma.QueueEntryGetPayload<{
 
 @Injectable()
 class QueueRepository {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly redisService: RedisService,
+  ) {}
+
+  async getCachedQueue(healthUnitId: string): Promise<Queue | null> {
+    const cacheKey = `queue:${healthUnitId}`;
+
+    const cached = await this.redisService.get(cacheKey);
+    if (cached) {
+      return JSON.parse(cached) as Queue;
+    }
+
+    const today = new Date();
+    today.setUTCHours(0, 0, 0, 0);
+
+    const queue = await this.prisma.queue.findUnique({
+      where: {
+        healthUnitId_date: {
+          healthUnitId,
+          date: today,
+        },
+      },
+    });
+
+    if (!queue) return null;
+
+    await this.redisService.set(cacheKey, JSON.stringify(queue), 5);
+
+    return queue;
+  }
 
   async findTodayQueue(healthUnitId: string): Promise<Queue | null> {
     const today = new Date();
