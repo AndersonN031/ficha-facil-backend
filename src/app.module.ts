@@ -17,10 +17,7 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 @Module({
   imports: [
     ThrottlerModule.forRoot({
-      throttlers: [
-        { name: 'global', ttl: 60000, limit: 100 },
-        { name: 'queue', ttl: 60000, limit: 5 },
-      ],
+      throttlers: [{ name: 'global', ttl: 60000, limit: 60 }],
     }),
     ConfigModule.forRoot({
       isGlobal: true,
