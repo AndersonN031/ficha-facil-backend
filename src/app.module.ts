@@ -12,9 +12,13 @@ import { UsersModule } from './modules/users/users.module';
 import { HealthUnitsModule } from './modules/health-units/health-units.module';
 import { QueueModule } from '@modules/queue/queue.module';
 import { RedisModule } from './config/redis.module';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
   imports: [
+    ThrottlerModule.forRoot({
+      throttlers: [{ name: 'global', ttl: 60000, limit: 60 }],
+    }),
     ConfigModule.forRoot({
       isGlobal: true,
     }),
@@ -31,6 +35,7 @@ import { RedisModule } from './config/redis.module';
     AppService,
     { provide: APP_GUARD, useClass: JwtGuard },
     { provide: APP_GUARD, useClass: RolesGuard },
+    { provide: APP_GUARD, useClass: ThrottlerGuard },
   ],
 })
 export class AppModule {}

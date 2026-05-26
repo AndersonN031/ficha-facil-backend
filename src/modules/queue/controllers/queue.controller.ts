@@ -13,6 +13,7 @@ import { CurrentUser } from '@shared/decorators/current-user.decorator';
 import type { CurrentUserPayload } from '@shared/decorators/current-user.decorator';
 import { GetCachedQueueUseCase } from '../usecases/get-cached-queue.usecase';
 import { Public } from '@shared/decorators/public.decorator';
+import { Throttle } from '@nestjs/throttler';
 
 @Controller('queue')
 class QueueController {
@@ -29,6 +30,7 @@ class QueueController {
   }
 
   @Post(':unitId/enter')
+  @Throttle({ global: { ttl: 60000, limit: 3 } })
   async enter(
     @Param('unitId') unitId: string,
     @CurrentUser() user: CurrentUserPayload,
