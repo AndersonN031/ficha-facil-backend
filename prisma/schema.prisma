@@ -27,6 +27,12 @@ enum QueueEntryStatus {
   CANCELLED  
 }
 
+enum TicketStatus {
+  WAITING     
+  IN_PROGRESS  
+  DONE         
+}
+
 
 model User {
   id        String   @id @default(uuid())
@@ -42,6 +48,8 @@ model User {
 
   refreshTokens RefreshToken[]
   queueEntries QueueEntry[]
+
+  doctorTickets Ticket[] @relation("DoctorTickets")
 
   @@map("users")
 }
@@ -74,6 +82,8 @@ model HealthUnit {
   updatedAt      DateTime @updatedAt
 
   queues Queue[]
+
+  ticket Ticket[]
 
   @@map("health_units")
 }
@@ -108,7 +118,29 @@ model QueueEntry {
   userId String
   user   User   @relation(fields: [userId], references: [id])
 
+  ticket Ticket?
+
   @@unique([queueId, userId])  
   @@unique([queueId, position]) 
   @@map("queue_entries")
+}
+
+model Ticket {
+  id             String       @id @default(uuid())
+  ticketNumber   Int          
+  status         TicketStatus @default(WAITING)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  queueEntryId   String       @unique
+  queueEntry     QueueEntry   @relation(fields: [queueEntryId], references: [id])
+
+  doctorId       String?
+  doctor         User?        @relation("DoctorTickets", fields: [doctorId], references: [id])
+
+  healthUnitId   String
+  healthUnit     HealthUnit   @relation(fields: [healthUnitId], references: [id])
+
+  @@unique([healthUnitId, ticketNumber, createdAt])
+  @@map("tickets")
 }
