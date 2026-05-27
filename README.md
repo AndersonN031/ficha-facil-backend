@@ -70,6 +70,7 @@ Cada operação de negócio é um usecase independente — `RegisterUseCase`, `L
 
 ## Módulos
 
+<<<<<<< HEAD
 | Módulo            | Status       | Descrição                                                            |
 | ----------------- | ------------ | -------------------------------------------------------------------- |
 | **Auth**          | ✅ Concluído | Register, login, refresh token, logout, JWT + RBAC                   |
@@ -89,6 +90,17 @@ Cada operação de negócio é um usecase independente — `RegisterUseCase`, `L
 | [DEVELOPMENT.md](./docs/local-development-guide.md) | Como rodar o projeto localmente                                    |
 | [AUTH.md](./docs/auth-and-users.md)                 | Autenticação, JWT, RBAC, rotas de auth e usuários                  |
 | [QUEUE.md](./docs/queue.md)                         | Fila virtual, postos, cache, idempotência, concorrência, Socket.io |
+=======
+| Módulo | Status | Descrição |
+|--------|--------|-----------|
+| **Auth** | ✅ Concluído | Register, login, refresh token, logout, JWT + RBAC |
+| **Users** | ✅ Concluído | CRUD de perfil, gerenciamento de papéis |
+| **Health Units** | ✅ Concluído| Cadastro e configuração de postos |
+| **Queue** | ✅ Concluído | Fila virtual, posição em tempo real |
+| **Tickets** | 🚧 Em andamento | Emissão e controle de fichas |
+| **Notifications** | ⏳ Pendente | Socket.io + BullMQ workers |
+| **Reports** | ⏳ Pendente | Métricas e dashboard admin |
+>>>>>>> 63295ffc2df6b639c0e001202b7b5bda775c815f
 
 ---
 
