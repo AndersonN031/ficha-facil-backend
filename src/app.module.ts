@@ -13,6 +13,7 @@ import { HealthUnitsModule } from './modules/health-units/health-units.module';
 import { QueueModule } from '@modules/queue/queue.module';
 import { RedisModule } from './config/redis.module';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { TicketsModule } from '@modules/tickets/tickets.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
     HealthUnitsModule,
     QueueModule,
     RedisModule,
+    TicketsModule,
   ],
   controllers: [AppController],
   providers: [
