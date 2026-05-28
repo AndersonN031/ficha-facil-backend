@@ -51,6 +51,9 @@ model User {
 
   doctorTickets Ticket[] @relation("DoctorTickets")
 
+  healthUnitId String?
+  healthUnit   HealthUnit? @relation(fields: [healthUnitId], references: [id])
+
   @@map("users")
 }
 
@@ -82,8 +85,8 @@ model HealthUnit {
   updatedAt      DateTime @updatedAt
 
   queues Queue[]
-
   ticket Ticket[]
+  users User[]
 
   @@map("health_units")
 }
