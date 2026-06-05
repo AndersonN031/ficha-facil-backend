@@ -6,7 +6,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 class TicketsRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async findTicketByRecepcionist(healthUnitId: string) {
+  async findTodayTicketsByHealthUnit(healthUnitId: string) {
     const today = new Date();
     today.setUTCHours(0, 0, 0, 0);
 
