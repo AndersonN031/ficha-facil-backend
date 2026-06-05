@@ -6,6 +6,38 @@ import { PrismaService } from 'src/prisma/prisma.service';
 class TicketsRepository {
   constructor(private readonly prisma: PrismaService) {}
 
+  async findTodayTicketsByHealthUnit(healthUnitId: string) {
+    const today = new Date();
+    today.setUTCHours(0, 0, 0, 0);
+
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    return this.prisma.ticket.findMany({
+      where: {
+        healthUnitId,
+        createdAt: {
+          gte: today,
+          lt: tomorrow,
+        },
+      },
+      include: {
+        queueEntry: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                name: true,
+                cpf: true,
+              },
+            },
+          },
+        },
+      },
+      orderBy: { ticketNumber: 'asc' },
+    });
+  }
+
   async findNextInQueue(healthUnitId: string): Promise<{
     queueEntryId: string;
     userId: string;

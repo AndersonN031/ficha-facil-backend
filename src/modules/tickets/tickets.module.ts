@@ -4,11 +4,12 @@ import { TicketsRepository } from './repositories/tickets.repository';
 import { CallNextUseCase } from './usecases/call-next.usecase';
 import { QueueModule } from '../queue/queue.module';
 import { UsersModule } from '../users/users.module';
+import { GetTicketsUseCase } from './usecases/get-tickets.usecase';
 
 @Module({
   imports: [QueueModule, UsersModule],
   controllers: [TicketsController],
-  providers: [TicketsRepository, CallNextUseCase],
+  providers: [TicketsRepository, CallNextUseCase, GetTicketsUseCase],
   exports: [TicketsRepository],
 })
 export class TicketsModule {}
