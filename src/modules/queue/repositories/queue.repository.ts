@@ -20,6 +20,19 @@ class QueueRepository {
     private readonly redisService: RedisService,
   ) {}
 
+  async findActiveEntryByUser(
+    userId: string,
+  ): Promise<QueueEntryWithQueue | null> {
+    return this.prisma.queueEntry.findFirst({
+      where: {
+        userId,
+        status: QueueEntryStatus.WAITING,
+      },
+      include: { queue: true },
+      orderBy: { createdAt: 'desc' },
+    });
+  }
+
   async getCachedQueue(healthUnitId: string): Promise<Queue | null> {
     const cacheKey = `queue:${healthUnitId}`;
 
