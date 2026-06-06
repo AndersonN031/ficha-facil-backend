@@ -14,6 +14,7 @@ import type { CurrentUserPayload } from '@shared/decorators/current-user.decorat
 import { GetCachedQueueUseCase } from '../usecases/get-cached-queue.usecase';
 import { Public } from '@shared/decorators/public.decorator';
 import { Throttle } from '@nestjs/throttler';
+import { GetActiveEntryUseCase } from '../usecases/get-active-entry.usecase';
 
 @Controller('queue')
 class QueueController {
@@ -21,7 +22,13 @@ class QueueController {
     private readonly enterQueueUseCase: EnterQueueUseCase,
     private readonly leaveQueueUseCase: LeaveQueueUseCase,
     private readonly getCachedQueueUseCase: GetCachedQueueUseCase,
+    private readonly getActiveEntryUseCase: GetActiveEntryUseCase,
   ) {}
+
+  @Get('my-entry')
+  async getMyEntry(@CurrentUser() user: CurrentUserPayload) {
+    return this.getActiveEntryUseCase.execute(user.sub);
+  }
 
   @Public()
   @Get(':unitId')
