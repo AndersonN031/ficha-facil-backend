@@ -8,6 +8,7 @@ export class UserEntity {
   phone: string | null;
   role: Role;
   active: boolean;
+  healthUnitId: string | null;
   createdAt: Date;
   updatedAt: Date;
 
@@ -19,6 +20,7 @@ export class UserEntity {
     this.phone = partial.phone;
     this.role = partial.role;
     this.active = partial.active;
+    this.healthUnitId = partial.healthUnitId;
     this.createdAt = partial.createdAt;
     this.updatedAt = partial.updatedAt;
   }
