@@ -15,6 +15,9 @@ import { GetCachedQueueUseCase } from '../usecases/get-cached-queue.usecase';
 import { Public } from '@shared/decorators/public.decorator';
 import { Throttle } from '@nestjs/throttler';
 import { GetActiveEntryUseCase } from '../usecases/get-active-entry.usecase';
+import { Roles } from '@shared/decorators/roles.decorator';
+import { GetTodayQueueWithEntries } from '../usecases/get-today-queue-with-entries.usecase';
+import { Role } from '@prisma/client';
 
 @Controller('queue')
 class QueueController {
@@ -23,6 +26,7 @@ class QueueController {
     private readonly leaveQueueUseCase: LeaveQueueUseCase,
     private readonly getCachedQueueUseCase: GetCachedQueueUseCase,
     private readonly getActiveEntryUseCase: GetActiveEntryUseCase,
+    private readonly getTodayQueueWithEntries: GetTodayQueueWithEntries,
   ) {}
 
   @Get('my-entry')
@@ -34,6 +38,12 @@ class QueueController {
   @Get(':unitId')
   async getQueue(@Param('unitId') unitId: string) {
     return this.getCachedQueueUseCase.execute(unitId);
+  }
+
+  @Get(':unitId/entries')
+  @Roles(Role.RECEPTIONIST)
+  async todayQueue(@Param('unitId') unitId: string) {
+    return this.getTodayQueueWithEntries.execute(unitId);
   }
 
   @Post(':unitId/enter')

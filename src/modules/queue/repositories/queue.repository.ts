@@ -60,6 +60,26 @@ class QueueRepository {
     return queue;
   }
 
+  async findTodayQueueWithEntries(healthUnitId: string) {
+    const today = new Date();
+    today.setUTCHours(0, 0, 0, 0);
+
+    return this.prisma.queue.findUnique({
+      where: {
+        healthUnitId_date: {
+          healthUnitId,
+          date: today,
+        },
+      },
+      include: {
+        entries: {
+          where: { status: QueueEntryStatus.WAITING },
+          orderBy: { position: 'asc' },
+        },
+      },
+    });
+  }
+
   async findTodayQueue(healthUnitId: string): Promise<Queue | null> {
     const today = new Date();
     today.setUTCHours(0, 0, 0, 0);

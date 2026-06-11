@@ -7,6 +7,7 @@ import { LeaveQueueUseCase } from './usecases/leave-queue.usecase';
 import { QueueGateway } from './gateway/queue.gateway';
 import { GetCachedQueueUseCase } from './usecases/get-cached-queue.usecase';
 import { GetActiveEntryUseCase } from './usecases/get-active-entry.usecase';
+import { GetFindTodayQueueWithEntries } from './usecases/get-today-queue-with-entries.usecase';
 
 @Module({
   imports: [HealthUnitsModule],
@@ -18,6 +19,7 @@ import { GetActiveEntryUseCase } from './usecases/get-active-entry.usecase';
     LeaveQueueUseCase,
     GetCachedQueueUseCase,
     GetActiveEntryUseCase,
+    GetFindTodayQueueWithEntries,
   ],
   exports: [QueueRepository, QueueGateway],
 })
