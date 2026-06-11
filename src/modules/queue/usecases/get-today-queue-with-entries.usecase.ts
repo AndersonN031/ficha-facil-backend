@@ -9,7 +9,8 @@ class GetTodayQueueWithEntries {
     const queue =
       await this.queueRepository.findTodayQueueWithEntries(healthUnitId);
 
-    if (!queue) throw new NotFoundException('Nenhuma foi encontrada');
+    if (!queue)
+      throw new NotFoundException('Nenhuma fila aberta hoje para este posto');
 
     return queue;
   }
