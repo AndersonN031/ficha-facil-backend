@@ -17,6 +17,7 @@ import { Throttle } from '@nestjs/throttler';
 import { GetActiveEntryUseCase } from '../usecases/get-active-entry.usecase';
 import { Roles } from '@shared/decorators/roles.decorator';
 import { GetTodayQueueWithEntries } from '../usecases/get-today-queue-with-entries.usecase';
+import { Role } from '@prisma/client';
 
 @Controller('queue')
 class QueueController {
@@ -40,7 +41,7 @@ class QueueController {
   }
 
   @Get(':unitId/entries')
-  @Roles('RECEPTIONIST')
+  @Roles(Role.RECEPTIONIST)
   async todayQueue(@Param('unitId') unitId: string) {
     return this.getTodayQueueWithEntries.execute(unitId);
   }
