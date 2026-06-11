@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { QueueRepository } from '../repositories/queue.repository';
 
 @Injectable()
-class GetFindTodayQueueWithEntries {
+class GetTodayQueueWithEntries {
   constructor(private readonly queueRepository: QueueRepository) {}
 
   async execute(healthUnitId: string) {
@@ -15,4 +15,4 @@ class GetFindTodayQueueWithEntries {
   }
 }
 
-export { GetFindTodayQueueWithEntries };
+export { GetTodayQueueWithEntries };
