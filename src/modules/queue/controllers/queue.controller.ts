@@ -16,6 +16,7 @@ import { Public } from '@shared/decorators/public.decorator';
 import { Throttle } from '@nestjs/throttler';
 import { GetActiveEntryUseCase } from '../usecases/get-active-entry.usecase';
 import { GetFindTodayQueueWithEntries } from '../usecases/get-find-today-queue-with-entries.usecase';
+import { Roles } from '@shared/decorators/roles.decorator';
 
 @Controller('queue')
 class QueueController {
@@ -39,10 +40,8 @@ class QueueController {
   }
 
   @Get(':unitId/entries')
-  async todayQueue(
-    @Param('unitId') unitId: string,
-    // @CurrentUser() user: CurrentUserPayload,
-  ) {
+  @Roles('RECEPTIONIST')
+  async todayQueue(@Param('unitId') unitId: string) {
     return this.getFindTodayQueueWithEntries.execute(unitId);
   }
 
