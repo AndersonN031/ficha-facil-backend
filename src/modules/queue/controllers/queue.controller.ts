@@ -15,6 +15,7 @@ import { GetCachedQueueUseCase } from '../usecases/get-cached-queue.usecase';
 import { Public } from '@shared/decorators/public.decorator';
 import { Throttle } from '@nestjs/throttler';
 import { GetActiveEntryUseCase } from '../usecases/get-active-entry.usecase';
+import { GetFindTodayQueueWithEntries } from '../usecases/get-find-today-queue-with-entries.usecase';
 
 @Controller('queue')
 class QueueController {
@@ -23,6 +24,7 @@ class QueueController {
     private readonly leaveQueueUseCase: LeaveQueueUseCase,
     private readonly getCachedQueueUseCase: GetCachedQueueUseCase,
     private readonly getActiveEntryUseCase: GetActiveEntryUseCase,
+    private readonly getFindTodayQueueWithEntries: GetFindTodayQueueWithEntries,
   ) {}
 
   @Get('my-entry')
@@ -34,6 +36,14 @@ class QueueController {
   @Get(':unitId')
   async getQueue(@Param('unitId') unitId: string) {
     return this.getCachedQueueUseCase.execute(unitId);
+  }
+
+  @Get(':unitId/entries')
+  async todayQueue(
+    @Param('unitId') unitId: string,
+    // @CurrentUser() user: CurrentUserPayload,
+  ) {
+    return this.getFindTodayQueueWithEntries.execute(unitId);
   }
 
   @Post(':unitId/enter')
