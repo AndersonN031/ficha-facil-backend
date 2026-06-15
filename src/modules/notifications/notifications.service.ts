@@ -23,8 +23,8 @@ class NotificationsService {
         type: 'exponential',
         delay: 2000,
       },
-      removeOnComplete: true,
-      removeOnFail: true,
+      removeOnComplete: false,
+      removeOnFail: false,
     });
   }
 }
