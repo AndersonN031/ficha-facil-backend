@@ -5,7 +5,7 @@ import { Queue } from 'bullmq';
 export interface NotifyPatientJob {
   healthUnitId: string;
   userId: string;
-  tickerNumber: number;
+  ticketNumber: number;
   position: number;
   message: string;
 }
