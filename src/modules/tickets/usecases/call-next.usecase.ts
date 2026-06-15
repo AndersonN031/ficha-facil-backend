@@ -9,6 +9,7 @@ import { UsersRepository } from '@modules/users/repositories/users.repository';
 import { RedisService } from 'src/config/redis.config';
 import { QueueGateway } from '@modules/queue/gateway/queue.gateway';
 import { Ticket } from '@prisma/client';
+import { NotificationsService } from '@modules/notifications/notifications.service';
 
 @Injectable()
 class CallNextUseCase {
@@ -18,6 +19,7 @@ class CallNextUseCase {
     private readonly usersRepository: UsersRepository,
     private readonly redisService: RedisService,
     private readonly queueGateway: QueueGateway,
+    private readonly notificationsService: NotificationsService,
   ) {}
 
   async execute(receptionistId: string): Promise<Ticket> {
@@ -69,8 +71,10 @@ class CallNextUseCase {
     }
 
     // 7. emite notificação específica para o paciente chamado
-    this.queueGateway.emitTicketCalled(healthUnitId, {
+    await this.notificationsService.notifyPatientCalled({
+      healthUnitId,
       userId: next.userId,
+      ticketNumber: ticket.ticketNumber,
       position: next.position,
       message: `Sua ficha de número ${ticketNumber} foi chamada! Dirija-se à recepção.`,
     });

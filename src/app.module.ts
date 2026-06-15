@@ -3,7 +3,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PrismaModule } from './prisma/prisma.module';
 import { AuthModule } from '@modules/auth/auth.module';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtGuard } from '@shared/guards/jwt.guard';
 import { JwtModule } from '@nestjs/jwt';
@@ -14,6 +14,8 @@ import { QueueModule } from '@modules/queue/queue.module';
 import { RedisModule } from './config/redis.module';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { TicketsModule } from '@modules/tickets/tickets.module';
+import { BullModule } from '@nestjs/bullmq';
+import { NotificationsModule } from '@modules/notifications/notifications.module';
 
 @Module({
   imports: [
@@ -24,6 +26,17 @@ import { TicketsModule } from '@modules/tickets/tickets.module';
       isGlobal: true,
     }),
     JwtModule.register({ global: true }),
+    BullModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => ({
+        connection: {
+          host: configService.get<string>('REDIS_HOST'),
+          port: configService.get<number>('REDIS_PORT'),
+          password: configService.get<string>('REDIS_PASSWORD'),
+        },
+      }),
+      inject: [ConfigService],
+    }),
     PrismaModule,
     AuthModule,
     UsersModule,
@@ -31,6 +44,7 @@ import { TicketsModule } from '@modules/tickets/tickets.module';
     QueueModule,
     RedisModule,
     TicketsModule,
+    NotificationsModule,
   ],
   controllers: [AppController],
   providers: [
