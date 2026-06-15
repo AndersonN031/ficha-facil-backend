@@ -15,6 +15,7 @@ import { RedisModule } from './config/redis.module';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { TicketsModule } from '@modules/tickets/tickets.module';
 import { BullModule } from '@nestjs/bullmq';
+import { NotificationsModule } from '@modules/notifications/notifications.module';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { BullModule } from '@nestjs/bullmq';
     QueueModule,
     RedisModule,
     TicketsModule,
+    NotificationsModule,
   ],
   controllers: [AppController],
   providers: [
