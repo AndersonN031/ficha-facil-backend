@@ -5,9 +5,10 @@ import { CallNextUseCase } from './usecases/call-next.usecase';
 import { QueueModule } from '../queue/queue.module';
 import { UsersModule } from '../users/users.module';
 import { GetTicketsUseCase } from './usecases/get-tickets.usecase';
+import { NotificationsModule } from '@modules/notifications/notifications.module';
 
 @Module({
-  imports: [QueueModule, UsersModule],
+  imports: [QueueModule, UsersModule, NotificationsModule],
   controllers: [TicketsController],
   providers: [TicketsRepository, CallNextUseCase, GetTicketsUseCase],
   exports: [TicketsRepository],
