@@ -12,7 +12,7 @@ class NotificationsProcessor extends WorkerHost {
     super();
   }
 
-  async process(job: Job<NotifyPatientJob>): Promise<void> {
+  process(job: Job<NotifyPatientJob>): Promise<void> {
     const { healthUnitId, userId, ticketNumber, position, message } = job.data;
 
     this.logger.log(
@@ -28,6 +28,8 @@ class NotificationsProcessor extends WorkerHost {
     this.logger.log(
       `Notificação enviada com sucesso - ticket #${ticketNumber}`,
     );
+
+    return Promise.resolve();
   }
 }
 
