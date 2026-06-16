@@ -38,6 +38,38 @@ class TicketsRepository {
     });
   }
 
+  async findDoctorDailyTickets(healthUnitId: string) {
+    const today = new Date();
+    today.setUTCHours(0, 0, 0, 0);
+
+    const tomorrow = new Date();
+    tomorrow.setUTCHours(24, 0, 0, 0);
+
+    return this.prisma.ticket.findMany({
+      where: {
+        healthUnitId,
+        createdAt: {
+          gte: today,
+          lt: tomorrow,
+        },
+      },
+      include: {
+        queueEntry: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                name: true,
+                cpf: true,
+              },
+            },
+          },
+        },
+      },
+      orderBy: { ticketNumber: 'asc' },
+    });
+  }
+
   async findNextInQueue(healthUnitId: string): Promise<{
     queueEntryId: string;
     userId: string;
