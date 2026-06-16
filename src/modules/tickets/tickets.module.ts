@@ -7,6 +7,7 @@ import { UsersModule } from '../users/users.module';
 import { GetTicketsUseCase } from './usecases/get-tickets.usecase';
 import { NotificationsModule } from '@modules/notifications/notifications.module';
 import { GetDoctorTicketUseCase } from './usecases/get-doctor-tickets.usecase';
+import { PatchStartTreatmentUseCase } from './usecases/patch-start-treatment.usecase';
 
 @Module({
   imports: [QueueModule, UsersModule, NotificationsModule],
@@ -16,6 +17,7 @@ import { GetDoctorTicketUseCase } from './usecases/get-doctor-tickets.usecase';
     CallNextUseCase,
     GetTicketsUseCase,
     GetDoctorTicketUseCase,
+    PatchStartTreatmentUseCase,
   ],
   exports: [TicketsRepository],
 })
