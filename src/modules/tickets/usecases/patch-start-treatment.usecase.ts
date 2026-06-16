@@ -8,7 +8,7 @@ import { UsersRepository } from '@modules/users/repositories/users.repository';
 import { Ticket } from '@prisma/client';
 
 @Injectable()
-class PatchStartTreatment {
+class PatchStartTreatmentUseCase {
   constructor(
     private readonly ticketsRepository: TicketsRepository,
     private readonly usersRepository: UsersRepository,
@@ -20,8 +20,7 @@ class PatchStartTreatment {
       throw new NotFoundException('Médico não encontrado');
     }
 
-    const ticket =
-      await this.ticketsRepository.findDoctorDailyTickets(ticketId);
+    const ticket = await this.ticketsRepository.findById(ticketId);
     if (!ticket) {
       throw new NotFoundException('Ticket não encontrado');
     }
@@ -34,4 +33,4 @@ class PatchStartTreatment {
   }
 }
 
-export { PatchStartTreatment };
+export { PatchStartTreatmentUseCase };
