@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { QueueEntryStatus, Ticket } from '@prisma/client';
+import { QueueEntryStatus, Ticket, TicketStatus } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
@@ -128,6 +128,13 @@ class TicketsRepository {
     ]);
 
     return ticket;
+  }
+
+  async startTreatment(ticketId: string): Promise<Ticket> {
+    return this.prisma.ticket.update({
+      where: { id: ticketId },
+      data: { status: TicketStatus.IN_PROGRESS },
+    });
   }
 
   async countTodayTickets(healthUnitId: string): Promise<number> {
