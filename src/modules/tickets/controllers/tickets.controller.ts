@@ -20,6 +20,13 @@ class TicketsController {
     return this.getTicketsUsecase.execute(user.sub);
   }
 
+  @Roles(Role.DOCTOR)
+  @Get('doctor/today')
+  @HttpCode(HttpStatus.OK)
+  async findDoctorTickets(@CurrentUser() user: CurrentUserPayload) {
+    return this.getTicketsUsecase.execute(user.sub);
+  }
+
   @Roles(Role.RECEPTIONIST)
   @Post('call-next')
   @HttpCode(HttpStatus.OK)
