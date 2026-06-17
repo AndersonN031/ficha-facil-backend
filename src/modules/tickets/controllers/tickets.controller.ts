@@ -63,7 +63,7 @@ class TicketsController {
     @Param('id') ticketId: string,
     @CurrentUser() user: CurrentUserPayload,
   ) {
-    return this.patchStartTreatmentUsecase.execute(ticketId, user.sub);
+    return this.patchCompleteTreatmentUseCase.execute(ticketId, user.sub);
   }
 }
 
