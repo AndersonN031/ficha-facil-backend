@@ -1,10 +1,16 @@
 import { Injectable } from '@nestjs/common';
-import { QueueEntryStatus, Ticket } from '@prisma/client';
+import { QueueEntryStatus, Ticket, TicketStatus } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 class TicketsRepository {
   constructor(private readonly prisma: PrismaService) {}
+
+  async findById(ticketId: string): Promise<Ticket | null> {
+    return this.prisma.ticket.findUnique({
+      where: { id: ticketId },
+    });
+  }
 
   async findTodayTicketsByHealthUnit(healthUnitId: string) {
     const today = new Date();
@@ -128,6 +134,29 @@ class TicketsRepository {
     ]);
 
     return ticket;
+  }
+
+  async startTreatment(ticketId: string): Promise<Ticket> {
+    return this.prisma.ticket.update({
+      where: { id: ticketId },
+      data: { status: TicketStatus.IN_PROGRESS },
+    });
+  }
+
+  async completeTreatment(ticketId: string): Promise<Ticket> {
+    return this.prisma.$transaction(async (tx) => {
+      const ticket = await tx.ticket.update({
+        where: { id: ticketId },
+        data: { status: TicketStatus.DONE },
+      });
+
+      await tx.queueEntry.update({
+        where: { id: ticket.queueEntryId },
+        data: { status: QueueEntryStatus.DONE },
+      });
+
+      return ticket;
+    });
   }
 
   async countTodayTickets(healthUnitId: string): Promise<number> {
