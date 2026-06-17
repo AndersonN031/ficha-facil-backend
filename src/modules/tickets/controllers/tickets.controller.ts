@@ -48,7 +48,7 @@ class TicketsController {
   @Patch(':id/start')
   @HttpCode(HttpStatus.OK)
   async startTreatment(
-    @Param('ticketId') ticketId: string,
+    @Param('id') ticketId: string,
     @CurrentUser() user: CurrentUserPayload,
   ) {
     return this.patchStartTreatmentUsecase.execute(ticketId, user.sub);
