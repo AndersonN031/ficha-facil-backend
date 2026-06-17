@@ -143,6 +143,22 @@ class TicketsRepository {
     });
   }
 
+  async completeTreatment(ticketId: string): Promise<Ticket> {
+    return this.prisma.$transaction(async (tx) => {
+      const ticket = await tx.ticket.update({
+        where: { id: ticketId },
+        data: { status: TicketStatus.DONE },
+      });
+
+      await tx.queueEntry.update({
+        where: { id: ticket.queueEntryId },
+        data: { status: QueueEntryStatus.DONE },
+      });
+
+      return ticket;
+    });
+  }
+
   async countTodayTickets(healthUnitId: string): Promise<number> {
     const today = new Date();
     today.setUTCHours(0, 0, 0, 0);
