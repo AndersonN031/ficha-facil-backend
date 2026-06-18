@@ -140,6 +140,15 @@ class TicketsRepository {
     return this.prisma.ticket.update({
       where: { id: ticketId },
       data: { status: TicketStatus.IN_PROGRESS },
+      include: {
+        queueEntry: {
+          include: {
+            user: {
+              select: { id: true, name: true, cpf: true },
+            },
+          },
+        },
+      },
     });
   }
 
