@@ -157,6 +157,15 @@ class TicketsRepository {
       const ticket = await tx.ticket.update({
         where: { id: ticketId },
         data: { status: TicketStatus.DONE },
+        include: {
+          queueEntry: {
+            include: {
+              user: {
+                select: { id: true, name: true, cpf: true },
+              },
+            },
+          },
+        },
       });
 
       await tx.queueEntry.update({
