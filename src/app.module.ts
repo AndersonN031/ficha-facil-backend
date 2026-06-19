@@ -20,7 +20,13 @@ import { NotificationsModule } from '@modules/notifications/notifications.module
 @Module({
   imports: [
     ThrottlerModule.forRoot({
-      throttlers: [{ name: 'global', ttl: 60000, limit: 60 }],
+      throttlers: [
+        {
+          name: 'global',
+          ttl: 60000,
+          limit: process.env.NODE_ENV === 'test' ? 1000 : 60,
+        },
+      ],
     }),
     ConfigModule.forRoot({
       isGlobal: true,

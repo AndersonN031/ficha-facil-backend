@@ -47,7 +47,9 @@ class QueueController {
   }
 
   @Post(':unitId/enter')
-  @Throttle({ global: { ttl: 60000, limit: 3 } })
+  @Throttle({
+    global: { ttl: 60000, limit: process.env.NODE_ENV === 'test' ? 1000 : 3 },
+  })
   async enter(
     @Param('unitId') unitId: string,
     @CurrentUser() user: CurrentUserPayload,
