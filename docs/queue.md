@@ -378,3 +378,28 @@ Configurado globalmente com `@nestjs/throttler`:
 | `POST /queue/:unitId/enter` | 3 requests/minuto por IP  |
 
 A rota de entrar na fila tem limite mais restritivo porque combinada com a idempotência Redis forma duas camadas de proteção contra abuso.
+
+**Em ambiente de teste**, esses limites são elevados para `1000/min` via `process.env.NODE_ENV === 'test'`, tanto no `ThrottlerModule.forRoot` global quanto no `@Throttle` da rota `enter`. Isso evita falsos `429` nos testes de integração, que disparam várias requests em sequência rápida dentro do mesmo `beforeEach`. Os limites de produção (`60` e `3`) permanecem inalterados em qualquer `NODE_ENV` diferente de `test`.
+
+```typescript
+// app.module.ts
+ThrottlerModule.forRoot({
+  throttlers: [
+    {
+      name: 'global',
+      ttl: 60000,
+      limit: process.env.NODE_ENV === 'test' ? 1000 : 60,
+    },
+  ],
+}),
+```
+
+```typescript
+// queue.controller.ts
+@Throttle({
+  global: {
+    ttl: 60000,
+    limit: process.env.NODE_ENV === 'test' ? 1000 : 3,
+  },
+})
+```
