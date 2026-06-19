@@ -96,6 +96,7 @@
     "testMatch": [
       "**/*.integration.spec.ts",
       "**/*.e2e.spec.ts"
-    ]
+    ],
+    "maxWorkers": 1
   }
 }
