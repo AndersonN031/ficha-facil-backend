@@ -1,11 +1,12 @@
 import {
+  ConflictException,
   ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import { TicketsRepository } from '../repositories/tickets.repository';
 import { UsersRepository } from '@modules/users/repositories/users.repository';
-import { Ticket } from '@prisma/client';
+import { Ticket, TicketStatus } from '@prisma/client';
 
 @Injectable()
 class PatchCompleteTreatmentUseCase {
@@ -27,6 +28,10 @@ class PatchCompleteTreatmentUseCase {
 
     if (ticket.healthUnitId !== doctor.healthUnitId) {
       throw new ForbiddenException('Ticket não pertence ao seu posto');
+    }
+
+    if (ticket.status !== TicketStatus.IN_PROGRESS) {
+      throw new ConflictException('Ticket não está em atendimento');
     }
 
     return this.ticketsRepository.completeTreatment(ticketId);
