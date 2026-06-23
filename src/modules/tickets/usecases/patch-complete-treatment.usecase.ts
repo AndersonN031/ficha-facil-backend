@@ -7,12 +7,14 @@ import {
 import { TicketsRepository } from '../repositories/tickets.repository';
 import { UsersRepository } from '@modules/users/repositories/users.repository';
 import { Ticket, TicketStatus } from '@prisma/client';
+import { QueueGateway } from '@modules/queue/gateway/queue.gateway';
 
 @Injectable()
 class PatchCompleteTreatmentUseCase {
   constructor(
     private readonly ticketsRepository: TicketsRepository,
     private readonly usersRepository: UsersRepository,
+    private readonly queueGateway: QueueGateway,
   ) {}
 
   async execute(ticketId: string, doctorId: string): Promise<Ticket> {
@@ -34,7 +36,13 @@ class PatchCompleteTreatmentUseCase {
       throw new ConflictException('Ticket não está em atendimento');
     }
 
-    return this.ticketsRepository.completeTreatment(ticketId);
+    const completed = await this.ticketsRepository.completeTreatment(ticketId);
+
+    this.queueGateway.emitTicketDone(ticket.healthUnitId, {
+      userId: completed.queueEntryId.user.id,
+    });
+
+    return completed;
   }
 }
 
