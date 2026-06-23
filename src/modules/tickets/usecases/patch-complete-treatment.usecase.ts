@@ -36,11 +36,11 @@ class PatchCompleteTreatmentUseCase {
       throw new ConflictException('Ticket não está em atendimento');
     }
 
-    const completed = await this.ticketsRepository.completeTreatment(ticketId);
-
-    this.queueGateway.emitTicketDone(ticket.healthUnitId, {
-      userId: completed.queueEntryId.user.id,
-    });
+    const completed = (await this.ticketsRepository.completeTreatment(
+      ticketId,
+    )) as Ticket & {
+      queueEntry: { user: { id: string } };
+    };
 
     return completed;
   }
