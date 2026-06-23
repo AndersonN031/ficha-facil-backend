@@ -9,6 +9,10 @@ import { UsersRepository } from '@modules/users/repositories/users.repository';
 import { Ticket, TicketStatus } from '@prisma/client';
 import { QueueGateway } from '@modules/queue/gateway/queue.gateway';
 
+type CompletedTicket = Ticket & {
+  queueEntry: { user: { id: string } };
+};
+
 @Injectable()
 class PatchCompleteTreatmentUseCase {
   constructor(
@@ -38,9 +42,11 @@ class PatchCompleteTreatmentUseCase {
 
     const completed = (await this.ticketsRepository.completeTreatment(
       ticketId,
-    )) as Ticket & {
-      queueEntry: { user: { id: string } };
-    };
+    )) as CompletedTicket;
+
+    this.queueGateway.emitTicketDone(ticket.healthUnitId, {
+      userId: completed.queueEntry.user.id,
+    });
 
     return completed;
   }
