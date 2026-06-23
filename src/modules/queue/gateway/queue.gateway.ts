@@ -67,6 +67,10 @@ class QueueGateway implements OnGatewayConnection, OnGatewayDisconnect {
   emitTicketCalled(healthUnitId: string, data: TicketCalledPayload) {
     this.server.to(`unit:${healthUnitId}`).emit('ticket:called', data);
   }
+
+  emitTicketDone(healthUnitId: string, data: TicketDonePayload) {
+    this.server.to(`unit:${healthUnitId}`).emit(`ticket:done`, data);
+  }
 }
 export { QueueGateway };
 
@@ -84,4 +88,8 @@ export interface TicketCalledPayload {
   userId: string;
   position: number;
   message: string;
+}
+
+export interface TicketDonePayload {
+  userId: string;
 }
