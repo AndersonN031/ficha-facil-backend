@@ -77,7 +77,7 @@ Cada operação de negócio é um usecase independente — `RegisterUseCase`, `L
 | **Users**         | ✅ Concluído | GET /me, PUT /me — perfil do usuário                                 |
 | **Health Units**  | ✅ Concluído | CRUD de postos, listagem pública com filtro por cidade/estado        |
 | **Queue**         | ✅ Concluído | Fila virtual, entrar, cancelar, cache Redis, Socket.io, idempotência |
-| **Tickets**       | 🚧 Sprint 3  | Emissão e controle de fichas                                         |
+| **Tickets**       | ✅ Concluído  | Emissão e controle de fichas                                         |
 | **Notifications** | 🚧 Sprint 3  | BullMQ workers para notificações                                     |
 | **Reports**       | ⏳ Pendente  | Métricas e dashboard admin                                           |
 
