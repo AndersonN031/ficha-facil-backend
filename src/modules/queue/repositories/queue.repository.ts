@@ -26,7 +26,13 @@ class QueueRepository {
     return this.prisma.queueEntry.findFirst({
       where: {
         userId,
-        status: QueueEntryStatus.WAITING,
+        status: {
+          in: [
+            QueueEntryStatus.WAITING,
+            QueueEntryStatus.CALLED,
+            QueueEntryStatus.DONE,
+          ],
+        },
       },
       include: { queue: true },
       orderBy: { createdAt: 'desc' },
