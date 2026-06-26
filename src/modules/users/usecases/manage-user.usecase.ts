@@ -3,7 +3,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { Role, User } from '@prisma/client';
+import { Role } from '@prisma/client';
 import { HealthUnitsRepository } from '@modules/health-units/repositories/health-units.repository';
 import { UsersRepository } from '../repositories/users.repository';
 import { ManageUserDto } from '../dto/manage-user.dto';
@@ -40,6 +40,6 @@ export class ManageUserUseCase {
       }
     }
 
-    return this.usersRepository.manageUser(targetUserId, dto) as Promise<User>;
+    return this.usersRepository.manageUser(targetUserId, dto);
   }
 }
