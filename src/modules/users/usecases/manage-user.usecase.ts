@@ -40,6 +40,13 @@ export class ManageUserUseCase {
       }
     }
 
-    return this.usersRepository.manageUser(targetUserId, dto);
+    const healthUnitId = ROLES_REQUIRING_HEALTH_UNIT.includes(incomingRole)
+      ? (dto.healthUnitId ?? user.healthUnitId)
+      : null;
+
+    return this.usersRepository.manageUser(targetUserId, {
+      role: dto.role,
+      healthUnitId,
+    });
   }
 }

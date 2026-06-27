@@ -26,7 +26,7 @@ class UsersRepository {
 
   async manageUser(
     id: string,
-    data: { role?: Role; healthUnitId?: string },
+    data: { role?: Role; healthUnitId?: string | null },
   ): Promise<User> {
     return this.prisma.user.update({ where: { id }, data });
   }
