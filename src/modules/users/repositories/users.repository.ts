@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { User } from '@prisma/client';
+import { Role, User } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 interface UpdateUserData {
@@ -21,6 +21,13 @@ class UsersRepository {
   }
 
   async update(id: string, data: UpdateUserData): Promise<User> {
+    return this.prisma.user.update({ where: { id }, data });
+  }
+
+  async manageUser(
+    id: string,
+    data: { role?: Role; healthUnitId?: string | null },
+  ): Promise<User> {
     return this.prisma.user.update({ where: { id }, data });
   }
 }
