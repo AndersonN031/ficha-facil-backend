@@ -1,4 +1,4 @@
-import { IsEnum, IsOptional, IsUUID } from 'class-validator';
+import { IsBoolean, IsEnum, IsOptional, IsUUID } from 'class-validator';
 import { Role } from '@prisma/client';
 
 export class ManageUserDto {
@@ -9,4 +9,8 @@ export class ManageUserDto {
   @IsOptional()
   @IsUUID()
   healthUnitId?: string;
+
+  @IsOptional()
+  @IsBoolean()
+  active?: boolean;
 }
