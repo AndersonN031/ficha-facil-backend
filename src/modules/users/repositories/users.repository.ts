@@ -12,6 +12,20 @@ interface UpdateUserData {
 class UsersRepository {
   constructor(private readonly prisma: PrismaService) {}
 
+  async findAllUsers(healthUnitId: string) {
+    return this.prisma.user.findMany({
+      where: { healthUnitId },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        active: true,
+        healthUnitId: true,
+      },
+    });
+  }
+
   async findById(id: string): Promise<User | null> {
     return this.prisma.user.findUnique({
       where: {

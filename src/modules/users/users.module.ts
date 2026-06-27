@@ -5,6 +5,7 @@ import { GetMeUseCase } from './usecases/get-me.usecase';
 import { UpdateMeUseCase } from './usecases/update-me.usecase';
 import { ManageUserUseCase } from './usecases/manage-user.usecase';
 import { HealthUnitsModule } from '@modules/health-units/health-units.module';
+import { FindAllUsersUseCase } from './usecases/find-all-users.usecase';
 
 @Module({
   imports: [HealthUnitsModule],
@@ -14,6 +15,7 @@ import { HealthUnitsModule } from '@modules/health-units/health-units.module';
     GetMeUseCase,
     UpdateMeUseCase,
     ManageUserUseCase,
+    FindAllUsersUseCase,
   ],
   exports: [UsersRepository],
 })
