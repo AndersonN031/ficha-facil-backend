@@ -38,6 +38,9 @@ export class ManageUserUseCase {
       if (!unit) {
         throw new NotFoundException('Posto não encontrado');
       }
+      if (!unit.active) {
+        throw new BadRequestException('Posto está inativo');
+      }
     }
 
     const healthUnitId = ROLES_REQUIRING_HEALTH_UNIT.includes(incomingRole)
