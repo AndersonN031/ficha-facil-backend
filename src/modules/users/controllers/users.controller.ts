@@ -20,9 +20,9 @@ class UsersController {
   ) {}
 
   @Roles(Role.ADMIN)
-  @Get('list-users')
-  async findAll() {
-    return this.findAllUsersUseCase.execute();
+  @Get(':unitId/list-users')
+  async findAll(@Param('unitId') unitId: string) {
+    return this.findAllUsersUseCase.execute(unitId);
   }
 
   @Get('me')
