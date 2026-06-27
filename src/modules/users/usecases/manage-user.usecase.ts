@@ -50,6 +50,7 @@ export class ManageUserUseCase {
     return this.usersRepository.manageUser(targetUserId, {
       role: dto.role,
       healthUnitId,
+      active: dto.active,
     });
   }
 }

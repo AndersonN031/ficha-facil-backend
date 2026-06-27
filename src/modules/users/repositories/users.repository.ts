@@ -40,7 +40,7 @@ class UsersRepository {
 
   async manageUser(
     id: string,
-    data: { role?: Role; healthUnitId?: string | null },
+    data: { role?: Role; healthUnitId?: string | null; active?: boolean },
   ): Promise<User> {
     return this.prisma.user.update({ where: { id }, data });
   }
