@@ -8,6 +8,7 @@ import { Roles } from '@shared/decorators/roles.decorator';
 import { Role } from '@prisma/client';
 import { ManageUserUseCase } from '../usecases/manage-user.usecase';
 import { ManageUserDto } from '../dto/manage-user.dto';
+import { FindAllUsersUseCase } from '../usecases/find-all-users.usecase';
 
 @Controller('users')
 class UsersController {
@@ -15,7 +16,14 @@ class UsersController {
     private readonly getMeUseCase: GetMeUseCase,
     private readonly updateMeUseCase: UpdateMeUseCase,
     private readonly manageUserUseCase: ManageUserUseCase,
+    private readonly findAllUsersUseCase: FindAllUsersUseCase,
   ) {}
+
+  @Roles(Role.ADMIN)
+  @Get('list-users')
+  async findAll() {
+    return this.findAllUsersUseCase.execute();
+  }
 
   @Get('me')
   async getMe(@CurrentUser() user: CurrentUserPayload) {
