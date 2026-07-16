@@ -1,17 +1,25 @@
-import { Injectable } from '@nestjs/common';
-import { TicketStatus } from '@prisma/client';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { TicketStatus, User } from '@prisma/client';
 import { RedisService } from 'src/config/redis.config';
 import { ReportsRepository } from '../repositories/reports.repository';
+import { UsersRepository } from '@modules/users/repositories/users.repository';
 
 @Injectable()
 export class GetDailyReportUseCase {
   constructor(
     private readonly reportsRepository: ReportsRepository,
     private readonly redisService: RedisService,
+    private readonly userRepository: UsersRepository,
   ) {}
 
-  async execute(healthUnitId: string, dateStr: string) {
-    const cacheKey = `reports:daily:${healthUnitId}:${dateStr}`;
+  async execute(adminId: string, dateStr: string) {
+    const admin =
+      ((await this.userRepository.findById(adminId)) as User) || null;
+    if (!admin?.healthUnitId) {
+      throw new NotFoundException('Admin não está vinculado a um posto');
+    }
+
+    const cacheKey = `reports:daily:${admin.healthUnitId}:${dateStr}`;
 
     const cached = await this.redisService.get(cacheKey);
     if (cached) {
@@ -19,10 +27,8 @@ export class GetDailyReportUseCase {
     }
 
     const date = new Date(dateStr);
-    const { tickets, cancellations } = await this.reportsRepository.getDailyMetrics(
-      healthUnitId,
-      date,
-    );
+    const { tickets, cancellations } =
+      await this.reportsRepository.getDailyMetrics(admin.healthUnitId, date);
 
     // total de fichas emitidas
     const totalTickets = tickets.length;
@@ -47,7 +53,7 @@ export class GetDailyReportUseCase {
         : 0;
 
     // atendimentos por médico
-    const byDoctor = completedTickets.reduce
+    const byDoctor = completedTickets.reduce<
       Record<string, { name: string; count: number }>
     >((acc, t) => {
       if (!t.doctorId || !t.doctor) return acc;

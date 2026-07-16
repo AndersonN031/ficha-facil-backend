@@ -1,10 +1,8 @@
 import { Controller, Get, Query } from '@nestjs/common';
 import { Roles } from '@shared/decorators/roles.decorator';
 import { Role } from '@prisma/client';
-import {
-  CurrentUser,
-  CurrentUserPayload,
-} from '@shared/decorators/current-user.decorator';
+import { CurrentUser } from '@shared/decorators/current-user.decorator';
+import type { CurrentUserPayload } from '@shared/decorators/current-user.decorator';
 import { GetDailyReportUseCase } from '../usecase/get-daily-report.usecase';
 
 @Controller('reports')
@@ -18,6 +16,6 @@ export class ReportsController {
     @Query('date') date: string,
   ) {
     const dateStr = date ?? new Date().toISOString().split('T')[0];
-    return this.getDailyReportUseCase.execute(user.healthUnitId, dateStr);
+    return this.getDailyReportUseCase.execute(user.sub, dateStr);
   }
 }
