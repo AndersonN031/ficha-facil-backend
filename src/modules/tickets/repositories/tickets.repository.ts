@@ -136,10 +136,10 @@ class TicketsRepository {
     return ticket;
   }
 
-  async startTreatment(ticketId: string): Promise<Ticket> {
+  async startTreatment(ticketId: string, doctorId: string): Promise<Ticket> {
     return this.prisma.ticket.update({
       where: { id: ticketId },
-      data: { status: TicketStatus.IN_PROGRESS },
+      data: { status: TicketStatus.IN_PROGRESS, doctorId },
       include: {
         queueEntry: {
           include: {

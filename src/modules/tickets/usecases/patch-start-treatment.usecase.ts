@@ -36,7 +36,7 @@ class PatchStartTreatmentUseCase {
       );
     }
 
-    return this.ticketsRepository.startTreatment(ticketId);
+    return this.ticketsRepository.startTreatment(ticketId, doctorId);
   }
 }
 
