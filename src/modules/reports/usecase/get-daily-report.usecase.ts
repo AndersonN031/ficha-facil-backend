@@ -64,6 +64,17 @@ export class GetDailyReportUseCase {
       return acc;
     }, {});
 
+    const byHour = tickets.reduce<Record<number, number>>((acc, t) => {
+      const hour = t.createdAt.getUTCHours();
+      acc[hour] = (acc[hour] ?? 0) + 1;
+      return acc;
+    }, {});
+
+    const ticketsByHour = Array.from({ length: 24 }, (_, hour) => ({
+      hour: `${String(hour).padStart(2, '0')}:00`,
+      count: byHour[hour] ?? 0,
+    })).filter((h) => h.count > 0);
+
     const report = {
       date: dateStr,
       totalTickets,
@@ -71,6 +82,7 @@ export class GetDailyReportUseCase {
       cancellations,
       avgWaitMinutes,
       byDoctor: Object.values(byDoctor),
+      ticketsByHour,
     };
 
     await this.redisService.set(cacheKey, JSON.stringify(report), 60);
