@@ -306,3 +306,15 @@ Deleção física perde histórico e pode quebrar integridade referencial com ou
 
 **Por que CPF sem formatação?**
 Guardar `04512345678` em vez de `045.123.456-78` evita inconsistência em buscas e validações. A formatação é responsabilidade do frontend.
+
+## CSRF
+
+A API não implementa proteção CSRF via token ou double submit cookie porque
+a autenticação é baseada em JWT enviado no header `Authorization: Bearer <token>`.
+
+Ataques CSRF dependem do browser enviar credenciais automaticamente (via cookies
+de sessão). Como nossas rotas protegidas exigem o token no header — que um site
+malicioso não consegue acessar — a arquitetura já mitiga CSRF por design.
+
+O cookie `session` usado pelo middleware do Next.js serve apenas para verificação
+de rota no servidor, não para autenticar requests na API.
