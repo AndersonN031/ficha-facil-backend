@@ -102,6 +102,31 @@ O projeto usa `dev` como branch principal de desenvolvimento.
 
 ---
 
+## Docker
+
+A API possui um `Dockerfile` multi-stage para build de produção.
+
+### Estágios
+
+| Stage        | Descrição                                                              |
+| ------------ | ---------------------------------------------------------------------- |
+| `builder`    | Instala dependências, compila o TypeScript para `dist/`                |
+| `production` | Copia apenas `dist/`, `node_modules` e `prisma/` — imagem final enxuta |
+
+### Construir a imagem
+
+```bash
+docker build -t ficha-facil-api .
+```
+
+### Rodar localmente
+
+```bash
+docker run -p 3001:3001 --env-file .env ficha-facil-api
+```
+
+> **Atenção:** ao rodar localmente via `docker run`, as variáveis `DATABASE_URL` e `REDIS_HOST` precisam apontar para URLs acessíveis externamente — não `localhost`. Em produção essas variáveis são configuradas no painel do Render com as URLs do Supabase e Redis.
+
 ## Autores
 
 Projeto desenvolvido como portfólio pessoal com foco em boas práticas de desenvolvimento back-end.
