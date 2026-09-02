@@ -4,3 +4,7 @@ dist
 .env.*
 !.env.example
 npm-debug.log
+coverage
+.git
+.gitignore
+README.md

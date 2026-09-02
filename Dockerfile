@@ -33,7 +33,7 @@ COPY --from=builder /app/package*.json ./
 ENV NODE_ENV=production
 
 # porta que a API escuta
-EXPOSE 3000
+EXPOSE 3001
 
 # comando para iniciar a API
 CMD ["node", "dist/main"]
