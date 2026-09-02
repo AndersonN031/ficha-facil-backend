@@ -1,0 +1,110 @@
+name: CI
+
+on:
+  pull_request:
+    branches:
+      - dev
+      - main
+
+jobs:
+  # ----------------------------------------
+  # Job 1 — Lint
+  # ----------------------------------------
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Rodar ESLint
+        run: npm run lint
+
+  # ----------------------------------------
+  # Job 2 — Testes com banco de teste real
+  # ----------------------------------------
+  test:
+    name: Testes de integração
+    runs-on: ubuntu-latest
+    needs: lint
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: filasaude
+          POSTGRES_PASSWORD: filasaude123
+          POSTGRES_DB: filasaude_db_test
+        ports:
+          - 5433:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6380:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      DATABASE_URL: postgresql://filasaude:filasaude123@localhost:5433/filasaude_db_test
+      REDIS_HOST: localhost
+      REDIS_PORT: 6380
+      REDIS_PASSWORD: ''
+      JWT_SECRET: secret_test
+      JWT_EXPIRES_IN: 15m
+      JWT_REFRESH_SECRET: refresh_secret_test
+      JWT_REFRESH_EXPIRES_IN: 7d
+      PORT: 3001
+      NODE_ENV: test
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Rodar migrations no banco de teste
+        run: npx prisma migrate deploy
+
+      - name: Rodar testes de integração
+        run: npm run test:integration
+
+  # ----------------------------------------
+  # Job 3 — Build Docker
+  # ----------------------------------------
+  build:
+    name: Build Docker
+    runs-on: ubuntu-latest
+    needs: test
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Build da imagem Docker
+        run: docker build -t ficha-facil-api .
