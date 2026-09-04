@@ -130,3 +130,5 @@ docker run -p 3001:3001 --env-file .env ficha-facil-api
 ## Autores
 
 Projeto desenvolvido como portfólio pessoal com foco em boas práticas de desenvolvimento back-end.
+
+OBS: Atualmente estou utilizando a branch dev para mergear códigos ao inves da master
