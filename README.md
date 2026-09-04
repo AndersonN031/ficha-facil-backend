@@ -32,7 +32,7 @@ Postos de saúde públicos distribuem fichas de atendimento por ordem de chegada
 - **PostgreSQL** — banco de dados relacional
 - **Redis** — cache de leitura e controle de idempotência
 - **Socket.io** — notificações em tempo real
-- **BullMQ** — filas e workers para processamento assíncrono (Sprint 3)
+- **BullMQ** — filas e workers para processamento assíncrono
 - **JWT** — autenticação com access token (30min) e refresh token (7d)
 - **RBAC** — autorização por papéis com Guards no NestJS
 
@@ -70,18 +70,62 @@ Cada operação de negócio é um usecase independente — `RegisterUseCase`, `L
 
 ## Módulos
 
-<<<<<<< HEAD
 | Módulo            | Status       | Descrição                                                            |
 | ----------------- | ------------ | -------------------------------------------------------------------- |
 | **Auth**          | ✅ Concluído | Register, login, refresh token, logout, JWT + RBAC                   |
 | **Users**         | ✅ Concluído | GET /me, PUT /me — perfil do usuário                                 |
 | **Health Units**  | ✅ Concluído | CRUD de postos, listagem pública com filtro por cidade/estado        |
 | **Queue**         | ✅ Concluído | Fila virtual, entrar, cancelar, cache Redis, Socket.io, idempotência |
-| **Tickets**       | 🚧 Sprint 3  | Emissão e controle de fichas                                         |
-| **Notifications** | 🚧 Sprint 3  | BullMQ workers para notificações                                     |
+| **Tickets**       | ✅ Concluído | Emissão, chamada de próximo, agenda do médico                        |
+| **Notifications** | ✅ Concluído | BullMQ workers com retry automático                                  |
 | **Reports**       | ⏳ Pendente  | Métricas e dashboard admin                                           |
 
 ---
+
+## Documentação
+
+| Arquivo                                                         | Conteúdo                                     |
+| --------------------------------------------------------------- | -------------------------------------------- |
+| [local-development-guide.md](./docs/local-development-guide.md) | Como rodar o projeto localmente              |
+| [auth-and-users.md](./docs/auth-and-users.md)                   | Autenticação, JWT, RBAC, segurança           |
+| [queue.md](./docs/queue.md)                                     | Fila virtual, cache, idempotência, Socket.io |
+| [tickets.md](./docs/tickets.md)                                 | Tickets, recepcionista, médico, BullMQ       |
+| [architecture.md](./docs/architecture.md)                       | Arquitetura do projeto                       |
+| [notifications.md](./docs/notifications.md)                     | BullMQ, workers e notificações               |
+| [feature.md](./docs/feature.md)                                 | Referência rápida de conceitos frontend      |
+
+---
+
+## Git
+
+O projeto usa `dev` como branch principal de desenvolvimento.
+
+---
+
+## Docker
+
+A API possui um `Dockerfile` multi-stage para build de produção.
+
+### Estágios
+
+| Stage        | Descrição                                                              |
+| ------------ | ---------------------------------------------------------------------- |
+| `builder`    | Instala dependências, compila o TypeScript para `dist/`                |
+| `production` | Copia apenas `dist/`, `node_modules` e `prisma/` — imagem final enxuta |
+
+### Construir a imagem
+
+```bash
+docker build -t ficha-facil-api .
+```
+
+### Rodar localmente
+
+```bash
+docker run -p 3001:3001 --env-file .env ficha-facil-api
+```
+
+> **Atenção:** ao rodar localmente via `docker run`, as variáveis `DATABASE_URL` e `REDIS_HOST` precisam apontar para URLs acessíveis externamente — não `localhost`. Em produção essas variáveis são configuradas no painel do Render com as URLs do Supabase e Redis.
 
 ## Autores
 

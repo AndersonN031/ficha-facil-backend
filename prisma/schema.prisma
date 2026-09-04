@@ -1,0 +1,149 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  PATIENT
+  RECEPTIONIST
+  DOCTOR
+  ADMIN
+}
+
+enum QueueStatus {
+  OPEN      
+  CLOSED   
+  FULL      
+}
+
+enum QueueEntryStatus {
+  WAITING   
+  CALLED     
+  DONE       
+  CANCELLED  
+}
+
+enum TicketStatus {
+  WAITING     
+  IN_PROGRESS  
+  DONE         
+}
+
+
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  cpf       String   @unique
+  phone     String?
+  password  String
+  role      Role     @default(PATIENT)
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  refreshTokens RefreshToken[]
+  queueEntries QueueEntry[]
+
+  doctorTickets Ticket[] @relation("DoctorTickets")
+
+  healthUnitId String?
+  healthUnit   HealthUnit? @relation(fields: [healthUnitId], references: [id])
+
+  @@map("users")
+}
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  revoked   Boolean  @default(false)
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("refresh_tokens")
+}
+
+model HealthUnit {
+  id             String   @id @default(uuid())
+  name           String
+  address        String
+  city           String
+  state          String   @db.Char(2)
+  cnes           String?  @unique
+  maxTicketsDay  Int      @default(20)
+  openTime       String   @default("07:00")
+  closeTime      String   @default("11:00")
+  active         Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  queues Queue[]
+  ticket Ticket[]
+  users User[]
+
+  @@map("health_units")
+}
+
+model Queue {
+  id           String      @id @default(uuid())
+  date         DateTime    @db.Date
+  status       QueueStatus @default(OPEN)
+  ticketCount  Int         @default(0)
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  healthUnitId String
+  healthUnit   HealthUnit @relation(fields: [healthUnitId], references: [id])
+
+  entries QueueEntry[]
+
+  @@unique([healthUnitId, date])
+  @@map("queues")
+}
+
+model QueueEntry {
+  id        String           @id @default(uuid())
+  position  Int
+  status    QueueEntryStatus @default(WAITING)
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+
+  queueId String
+  queue   Queue  @relation(fields: [queueId], references: [id])
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  ticket Ticket?
+
+  @@unique([queueId, userId])  
+  @@unique([queueId, position]) 
+  @@map("queue_entries")
+}
+
+model Ticket {
+  id             String       @id @default(uuid())
+  ticketNumber   Int          
+  status         TicketStatus @default(WAITING)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  queueEntryId   String       @unique
+  queueEntry     QueueEntry   @relation(fields: [queueEntryId], references: [id])
+
+  doctorId       String?
+  doctor         User?        @relation("DoctorTickets", fields: [doctorId], references: [id])
+
+  healthUnitId   String
+  healthUnit     HealthUnit   @relation(fields: [healthUnitId], references: [id])
+
+  @@unique([healthUnitId, ticketNumber, createdAt])
+  @@map("tickets")
+}
