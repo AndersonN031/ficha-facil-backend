@@ -17,6 +17,7 @@ import { TicketsModule } from '@modules/tickets/tickets.module';
 import { BullModule } from '@nestjs/bullmq';
 import { NotificationsModule } from '@modules/notifications/notifications.module';
 import { ReportsModule } from '@modules/reports/reports.module';
+import { HealthController } from '@modules/health/health.controller';
 
 @Module({
   imports: [
@@ -54,7 +55,7 @@ import { ReportsModule } from '@modules/reports/reports.module';
     NotificationsModule,
     ReportsModule,
   ],
-  controllers: [AppController],
+  controllers: [AppController, HealthController],
   providers: [
     AppService,
     { provide: APP_GUARD, useClass: JwtGuard },
