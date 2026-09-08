@@ -5,21 +5,26 @@ FROM node:20-slim AS builder
 
 WORKDIR /app
 
-# copia os arquivos de dependência primeiro
-# Docker cacheia essa camada — só reinstala se package.json mudar
+# Instala OpenSSL
+RUN apt-get update \
+    && apt-get install -y openssl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Dependências
 COPY package*.json ./
 COPY prisma ./prisma/
 
 RUN npm ci
 
-# copia o restante do código e compila
+# Código
 COPY . .
 
-# Gera o Prisma Client no mesmo ambiente
-# em que a aplicação será executada
+# Gera o Prisma Client dentro do Debian
 RUN npx prisma generate
 
+# Build NestJS
 RUN npm run build
+
 
 # ================================
 # Stage 2 — Production
@@ -28,17 +33,25 @@ FROM node:20-slim AS production
 
 WORKDIR /app
 
-# copia só o necessário do stage anterior
-COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/prisma ./prisma
-COPY --from=builder /app/package*.json ./
+# Instala OpenSSL
+RUN apt-get update \
+    && apt-get install -y openssl \
+    && rm -rf /var/lib/apt/lists/*
 
+# Arquivos compilados
+COPY --from=builder /app/dist ./dist
+
+# Dependências
+COPY --from=builder /app/node_modules ./node_modules
+
+# Prisma
+COPY --from=builder /app/prisma ./prisma
+
+# package
+COPY --from=builder /app/package*.json ./
 
 ENV NODE_ENV=production
 
-# porta que a API escuta
 EXPOSE 3001
 
-# comando para iniciar a API
-CMD ["node", "dist/main"]
+CMD ["node", "dist/main.js"]
