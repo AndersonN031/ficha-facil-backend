@@ -1,7 +1,7 @@
 # ================================
 # Stage 1 — Build
 # ================================
-FROM node:20-alpine AS builder
+FROM node:20-slim AS builder
 
 WORKDIR /app
 
@@ -14,6 +14,11 @@ RUN npm ci
 
 # copia o restante do código e compila
 COPY . .
+
+# Gera o Prisma Client no mesmo ambiente
+# em que a aplicação será executada
+RUN npx prisma generate
+
 RUN npm run build
 
 # ================================
