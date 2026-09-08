@@ -19,7 +19,7 @@ RUN npm run build
 # ================================
 # Stage 2 — Production
 # ================================
-FROM node:20-alpine AS production
+FROM node:20-slim AS production
 
 WORKDIR /app
 
