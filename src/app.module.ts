@@ -15,12 +15,12 @@ import { JwtGuard } from './shared/guards/jwt.guard';
 import { RolesGuard } from './shared/guards/roles.guard';
 import { BullModule } from '@nestjs/bullmq';
 import { IncomingMessage, ServerResponse } from 'http';
+import { HealthController } from '@modules/health/health.controller';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     LoggerModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -88,6 +88,7 @@ import { IncomingMessage, ServerResponse } from 'http';
     TicketsModule,
     NotificationsModule,
   ],
+  controllers: [HealthController],
   providers: [
     { provide: APP_GUARD, useClass: JwtGuard },
     { provide: APP_GUARD, useClass: RolesGuard },
