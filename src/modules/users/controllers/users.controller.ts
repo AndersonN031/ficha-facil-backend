@@ -9,6 +9,7 @@ import { Role } from '@prisma/client';
 import { ManageUserUseCase } from '../usecases/manage-user.usecase';
 import { ManageUserDto } from '../dto/manage-user.dto';
 import { FindAllUsersUseCase } from '../usecases/find-all-users.usecase';
+import { Public } from '@shared/decorators/public.decorator';
 
 @Controller('users')
 class UsersController {
@@ -45,6 +46,12 @@ class UsersController {
     @Body() dto: ManageUserDto,
   ) {
     return this.manageUserUseCase.execute(userId, dto);
+  }
+
+  @Public()
+  @Get('test-error')
+  testError() {
+    throw new Error('Erro intencional para testar o Sentry');
   }
 }
 
