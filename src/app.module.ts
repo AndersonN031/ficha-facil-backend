@@ -19,7 +19,15 @@ import { HealthController } from '@modules/health/health.controller';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath:
+        process.env.NODE_ENV === 'production'
+          ? '.env.production'
+          : process.env.NODE_ENV === 'test'
+            ? '.env.test'
+            : '.env',
+    }),
 
     LoggerModule.forRootAsync({
       imports: [ConfigModule],
